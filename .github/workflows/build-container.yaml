@@ -1,4 +1,4 @@
-name: Publish Docker Image to ghcr
+name: Publish Container Image to GHCR.IO
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     types: [created]
 
 jobs:
-  build_tag_push_to_ghcr:
+  build_container_and_publish:
     runs-on: ubuntu-latest
     steps:
       - name: Build, Tag and Push Docker Image to GHCR
