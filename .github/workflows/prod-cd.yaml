@@ -1,0 +1,15 @@
+name: prod CD
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  update-tags:
+    uses: GlueOps/github-workflows/.github/workflows/argocd-tags-ci.yml@main
+    secrets:
+      GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN: ${{ secrets.GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN }}
+    with:
+      ENV: 'prod'
+      CREATE_PR: true
