@@ -5,7 +5,6 @@
 
 
 
+<img width="959" alt="image" src="https://github.com/TryGlueOps/app/assets/6570292/8a4bfc2f-a69a-4550-91e4-1be14ee80ab8">
 
 
-
-<img width="1138" alt="image" src="https://github.com/TryGlueOps/app-template/assets/6570292/e2af0407-8630-4a8c-bcc1-a785a3892a9c">
