@@ -8,7 +8,8 @@ jobs:
   update-tags:
     uses: GlueOps/github-workflows/.github/workflows/argocd-tags-ci.yml@main
     if: github.event.pull_request.merged == true
-    secrets: inherit
+    secrets:
+      GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN: ${{ secrets.GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN }}
     with:
       ENV: 'stage'
       CREATE_PR: false
