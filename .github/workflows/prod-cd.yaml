@@ -1,4 +1,4 @@
-name: Prod CD
+name: prod CD
 
 on:
   release:
