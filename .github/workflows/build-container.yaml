@@ -1,15 +1,64 @@
-name: Publish Container Image to GHCR.IO
-
+name: Publish to GHCR.io
+ 
 on:
   push:
+    branches-ignore: 'dependabot/**'
   pull_request:
+    branches-ignore: 'dependabot/**'
     types: [closed]
   release:
     types: [created]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  build_container_and_publish:
+  build_tag_push_to_ghcr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - name: Build, Tag and Push Docker Image to GHCR
-        uses: GlueOps/github-actions-build-push-containers@main
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch,prefix=
+            type=ref,event=tag,prefix=
+            type=sha,format=short,prefix=
+            type=sha,format=long,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355 # v6.10.0
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
