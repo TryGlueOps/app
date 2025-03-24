@@ -12,4 +12,4 @@ jobs:
       GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN: ${{ secrets.GLUEOPS_DEPLOYMENT_CONFIGS_REPO_TOKEN }}
     with:
       ENV: 'prod'
-      CREATE_PR: true
+      CREATE_PR: false
